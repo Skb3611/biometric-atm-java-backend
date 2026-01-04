@@ -43,6 +43,22 @@ java -jar target/biometric-atm-backend-1.0.0.jar
 
 ## 📡 API Endpoints
 
+## 👤 User Credentials (For Testing)
+
+### Users & Fingerprint IDs
+| User Name | Fingerprint ID | PIN(s) | Account Numbers | Banks |
+|-----------|----------------|--------|------------------|-------|
+| **Pranali bagul** | `fingerprint_pranali` | 1234 | 1001234567, 1001234570 | SBI, HDFC |
+| **Harshada Panchal** | `fingerprint_harshada` | 5678 | 1001234568, 1001234571 | ICICI, AXIS |
+| **Gayatri Waghmare** | `fingerprint_gayatri` | 9012 | 1001234572, 1001234574 | AXIS, HDFC |
+| **Shubhangi Waghchaure** | `fingerprint_shubhangi` | 3456 | 1001234573, 1001234575 | SBI, ICICI |
+
+### Account Details
+- **Pranali**: SBI (₹50,000), HDFC (₹30,000)
+- **Harshada**: ICICI (₹75,000), AXIS (₹45,000)
+- **Gayatri**: AXIS (₹60,000), HDFC (₹35,000)
+- **Shubhangi**: SBI (₹55,000), ICICI (₹40,000)
+
 ### 🔓 Authentication Endpoints
 
 #### POST `/auth/verify-fingerprint`
@@ -51,7 +67,7 @@ java -jar target/biometric-atm-backend-1.0.0.jar
 **Body**:
 ```json
 {
-  "fingerprintId": "fingerprint_jonny"
+  "fingerprintId": "fingerprint_pranali"
 }
 ```
 **Response**:
@@ -59,9 +75,9 @@ java -jar target/biometric-atm-backend-1.0.0.jar
 {
   "message": "Fingerprint verified",
   "user": {
-    "id": 3,
-    "name": "Jonny",
-    "fingerprintId": "fingerprint_jonny",
+    "id": 1,
+    "name": "Pranali bagul",
+    "fingerprintId": "fingerprint_pranali",
     "accounts": [...],
     "transactions": [...]
   }
@@ -89,16 +105,16 @@ java -jar target/biometric-atm-backend-1.0.0.jar
 **Description**: Get user's account details and transactions
 **Headers**: 
 ```
-fingerprintId: fingerprint_jonny
+fingerprintId: fingerprint_pranali
 ```
 **Response**:
 ```json
 {
   "message": "User found",
   "user": {
-    "id": 3,
-    "name": "Jonny",
-    "fingerprintId": "fingerprint_jonny",
+    "id": 1,
+    "name": "Pranali bagul",
+    "fingerprintId": "fingerprint_pranali",
     "accounts": [...],
     "transactions": [...]
   }
@@ -107,7 +123,7 @@ fingerprintId: fingerprint_jonny
 
 #### POST `/dashboard/account/withdraw`
 **Description**: Withdraw money from account
-**Headers**: `fingerprintId: fingerprint_jonny`
+**Headers**: `fingerprintId: fingerprint_pranali`
 **Body**:
 ```json
 {
@@ -119,7 +135,7 @@ fingerprintId: fingerprint_jonny
 
 #### POST `/dashboard/account/deposit`
 **Description**: Deposit money to account
-**Headers**: `fingerprintId: fingerprint_jonny`
+**Headers**: `fingerprintId: fingerprint_pranali`
 **Body**:
 ```json
 {
@@ -143,7 +159,7 @@ fingerprintId: fingerprint_jonny
 
 #### GET `/dashboard/account/statement/{accountNumber}`
 **Description**: Get account statement
-**Headers**: `fingerprintId: fingerprint_jonny`
+**Headers**: `fingerprintId: fingerprint_pranali`
 **Path Variable**: `accountNumber`
 
 ---
@@ -261,9 +277,10 @@ spring.web.cors.allowed-origins=https://yourdomain.com,https://www.yourdomain.co
 ## 📝 Sample Data
 
 ### Seeded Users
-1. **Abhi** - `fingerprint_abhi`
-2. **Rohan** - `fingerprint_rohan`
-3. **Jonny** - `fingerprint_jonny`
+1. **Pranali bagul** - `fingerprint_pranali`
+2. **Harshada Panchal** - `fingerprint_harshada`
+3. **Gayatri Waghmare** - `fingerprint_gayatri`
+4. **Shubhangi Waghchaure** - `fingerprint_shubhangi`
 
 ### Sample Accounts
 - **SBI**: Account numbers starting with `100123456`
@@ -371,7 +388,7 @@ taskkill /F /IM java.exe
 
 ### Testing
 - Use Postman or curl for API testing
-- Sample fingerprint IDs available in seeded data
+- Sample fingerprint IDs: `fingerprint_pranali`, `fingerprint_harshada`, `fingerprint_gayatri`, `fingerprint_shubhangi`
 - H2 console for database inspection
 
 ---
