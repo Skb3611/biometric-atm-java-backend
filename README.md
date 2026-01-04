@@ -1,124 +1,4 @@
-# Biometric ATM System — Java Backend
-
-A Spring Boot implementation of the Biometric ATM System backend, providing the same API endpoints and functionality as the original Express.js version.
-
-## Features
-
-- **Fingerprint Authentication**: User authentication via fingerprint ID
-- **Banking Operations**: Withdraw, deposit, and transfer money
-- **Account Management**: View account details and transaction statements
-- **Database Integration**: PostgreSQL with JPA/Hibernate
-- **CORS Support**: Configured for frontend integration
-- **Data Seeding**: Automatic database seeding with sample data
-
-## Technology Stack
-
-- **Java 17**
-- **Spring Boot 3.2.0**
-- **Spring Data JPA**
-- **PostgreSQL**
-- **Maven**
-
-## API Endpoints
-
-### Health
-- `GET /health` - Server health check
-
-### Authentication
-- `POST /auth/verify-fingerprint` - Verify user by fingerprint ID
-
-### Dashboard (Protected - requires fingerprintId header)
-- `GET /dashboard/account-details` - Get user account details
-- `POST /dashboard/account/withdraw` - Withdraw money from account
-- `POST /dashboard/account/deposit` - Deposit money to account
-- `POST /dashboard/account/transfer` - Transfer money between accounts
-- `GET /dashboard/account/statement/{accountNumber}` - Get account statement
-
-## Setup Instructions
-
-### Prerequisites
-- Java 17 or higher
-- Maven 3.6 or higher
-- PostgreSQL database
-
-### Database Setup
-1. Create a PostgreSQL database named `biometric_atm`
-2. Update database credentials in `src/main/resources/application.properties`
-
-### Running the Application
-
-1. Clone and navigate to the project:
-```bash
-cd java-backend
-```
-
-2. Build and run the application:
-```bash
-mvn clean install
-mvn spring-boot:run
-```
-
-The application will start on `http://localhost:8000`
-
-### Sample Data
-The application automatically seeds the database with sample data on startup:
-
-**Users:**
-- Abhi (fingerprint: `fingerprint_abhi`)
-  - SBI Account: 1001234567 (PIN: 1234, Balance: 50000)
-  - HDFC Account: 1001234570 (PIN: 1234, Balance: 30000)
-
-- Rohan (fingerprint: `fingerprint_rohan`)
-  - ICICI Account: 1001234568 (PIN: 5678, Balance: 75000)
-  - AXIS Account: 1001234571 (PIN: 5678, Balance: 45000)
-
-- Jonny (fingerprint: `fingerprint_jonny`)
-  - AXIS Account: 1001234572 (PIN: 9012, Balance: 60000)
-
-## API Usage Examples
-
-### Verify Fingerprint
-```bash
-curl -X POST http://localhost:8000/auth/verify-fingerprint \
-  -H "Content-Type: application/json" \
-  -d '{ "fingerprintId": "fingerprint_abhi" }'
-```
-
-### Get Account Details
-```bash
-curl http://localhost:8000/dashboard/account-details \
-  -H "fingerprintId: fingerprint_abhi"
-```
-
-### Withdraw Money
-```bash
-curl -X POST http://localhost:8000/dashboard/account/withdraw \
-  -H "fingerprintId: fingerprint_abhi" \
-  -H "Content-Type: application/json" \
-  -d '{ "amt": 5000, "bankName": "SBI", "pin": 1234 }'
-```
-
-### Deposit Money
-```bash
-curl -X POST http://localhost:8000/dashboard/account/deposit \
-  -H "fingerprintId: fingerprint_abhi" \
-  -H "Content-Type: application/json" \
-  -d '{ "amt": 20000, "bankName": "HDFC" }'
-```
-
-### Transfer Money
-```bash
-curl -X POST http://localhost:8000/dashboard/account/transfer \
-  -H "fingerprintId: fingerprint_abhi" \
-  -H "Content-Type: application/json" \
-  -d '{ "senderAccountNO": "1001234567", "receiverAccountNO": "1001234568", "amt": 5000, "pin": 1234 }'
-```
-
-### Get Account Statement
-```bash
-curl http://localhost:8000/dashboard/account/statement/1001234567 \
-  -H "fingerprintId: fingerprint_abhi"
-```
+# Biometric ATM System — Backend API
 
 ## Project Structure
 
@@ -139,13 +19,260 @@ src/main/java/com/biometricatm/
 └── repository/                      # JPA repositories
 ```
 
-## Differences from Express.js Version
 
-- **Language**: Java vs TypeScript
-- **Framework**: Spring Boot vs Express.js
-- **ORM**: Spring Data JPA/Hibernate vs Prisma
-- **Validation**: Jakarta Bean Validation vs manual validation
-- **Dependency Management**: Maven vs npm/pnpm
-- **Database**: PostgreSQL (same as original)
+Base URL: `http://localhost:8000`
 
-The API endpoints, request/response formats, and business logic remain identical to ensure compatibility with the existing frontend.
+## User Credentials (For Testing)
+
+### Users & Fingerprint IDs
+| User Name | Fingerprint ID | PIN(s) | Account Numbers | Banks |
+|-----------|----------------|--------|------------------|-------|
+| **Pranali bagul** | `fingerprint_pranali` | 1234 | 1001234567, 1001234570 | SBI, HDFC |
+| **Harshada Panchal** | `fingerprint_harshada` | 5678 | 1001234568, 1001234571 | ICICI, AXIS |
+| **Gayatri Waghmare** | `fingerprint_gayatri` | 9012 | 1001234572, 1001234574 | AXIS, HDFC |
+| **Shubhangi Waghchaure** | `fingerprint_shubhangi` | 3456 | 1001234573, 1001234575 | SBI, ICICI |
+
+### Account Details
+- **Pranali**: SBI (₹50,000), HDFC (₹30,000)
+- **Harshada**: ICICI (₹75,000), AXIS (₹45,000)
+- **Gayatri**: AXIS (₹60,000), HDFC (₹35,000)
+- **Shubhangi**: SBI (₹55,000), ICICI (₹40,000)
+
+## Authentication
+- Protected endpoints under `/dashboard` require the `fingerprintId` header.
+- The middleware validates the header and attaches the authenticated user to the request.
+- Example header:
+  - `fingerprintId: fingerprint_pranali`
+
+## Health
+### GET /health
+- Returns server availability.
+- Response: `200 OK`
+  - Body: `Hello World!` (text)
+
+Example:
+```bash
+curl -i http://localhost:8000/health
+```
+
+## Auth
+### POST /auth/verify-fingerprint
+- Verifies a user by fingerprint ID.
+- Request headers:
+  - `Content-Type: application/json`
+- Request body:
+```json
+{ "fingerprintId": "fingerprint_pranali" }
+```
+- Responses:
+  - `200 OK`
+    ```json
+    {
+      "message": "Fingerprint verified",
+      "user": {
+        "id": 1,
+        "name": "Pranali bagul",
+        "fingerprintId": "fingerprint_pranali",
+        "accounts": [ /* Account[] */ ],
+        "transactions": [ /* Transaction[] */ ]
+      }
+    }
+    ```
+  - `400 Bad Request` — missing fingerprintId
+  - `404 Not Found` — user not found
+
+Example:
+```bash
+curl -X POST http://localhost:8000/auth/verify-fingerprint \
+  -H "Content-Type: application/json" \
+  -d '{ "fingerprintId": "fingerprint_pranali" }'
+```
+
+## Dashboard (Protected)
+Base path: `/dashboard`
+Headers required:
+- `fingerprintId: <string>`
+
+### GET /dashboard/account-details
+- Returns the authenticated user's details, accounts, and transactions.
+- Responses:
+  - `200 OK`
+    ```json
+    {
+      "message": "User found",
+      "user": {
+        "id": 1,
+        "name": "Pranali bagul",
+        "fingerprintId": "fingerprint_pranali",
+        "accounts": [ /* Account[] */ ],
+        "transactions": [ /* Transaction[] */ ]
+      }
+    }
+    ```
+  - `404 Not Found` — user not found
+
+Example:
+```bash
+curl http://localhost:8000/dashboard/account-details \
+  -H "fingerprintId: fingerprint_pranali"
+```
+
+### POST /dashboard/account/withdraw
+- Withdraws `amt` from the specified `bankName` account of the authenticated user. Requires correct `pin`.
+- Request headers:
+  - `fingerprintId: <string>`
+  - `Content-Type: application/json`
+- Request body:
+```json
+{ "amt": 5000, "bankName": "SBI", "pin": 1234 }
+```
+- Responses:
+  - `200 OK`
+    ```json
+    { "message": "Withdrawl successful", "user": { /* updated User */ } }
+    ```
+  - `400 Bad Request` — missing fingerprintId, account not found, insufficient balance, or invalid PIN
+  - `404 Not Found` — user not found
+
+Example:
+```bash
+curl -X POST http://localhost:8000/dashboard/account/withdraw \
+  -H "fingerprintId: fingerprint_pranali" \
+  -H "Content-Type: application/json" \
+  -d '{ "amt": 5000, "bankName": "SBI", "pin": 1234 }'
+```
+
+### POST /dashboard/account/deposit
+- Deposits `amt` into the specified `bankName` account of the authenticated user.
+- Request headers:
+  - `fingerprintId: <string>`
+  - `Content-Type: application/json`
+- Request body:
+```json
+{ "amt": 20000, "bankName": "HDFC" }
+```
+- Responses:
+  - `200 OK`
+    ```json
+    { "message": "Deposit successful", "user": { /* updated User */ } }
+    ```
+  - `400 Bad Request` — missing fingerprintId or amount
+  - `404 Not Found` — user not found
+  - `400 Bad Request` — account not found
+
+Example:
+```bash
+curl -X POST http://localhost:8000/dashboard/account/deposit \
+  -H "fingerprintId: fingerprint_pranali" \
+  -H "Content-Type: application/json" \
+  -d '{ "amt": 20000, "bankName": "HDFC" }'
+```
+
+### POST /dashboard/account/transfer
+- Transfers `amt` from `senderAccountNO` to `receiverAccountNO`. Requires correct `pin` for the sender account.
+- Request headers:
+  - `fingerprintId: <string>`
+  - `Content-Type: application/json`
+- Request body:
+```json
+{
+  "senderAccountNO": "1001234567",
+  "receiverAccountNO": "1001234568",
+  "amt": 5000,
+  "pin": 1234
+}
+```
+- Responses:
+  - `200 OK`
+    ```json
+    {
+      "message": "Transfer successful",
+      "senderAccountNo": "1001234567",
+      "receiverAccountNo": "1001234568",
+      "transaction": {
+        "id": 123,
+        "type": "transfer",
+        "fromAccountNumber": "1001234567",
+        "toAccountNumber": "1001234568",
+        "amount": 5000,
+        "userId": 1,
+        "createdAt": "..."
+      }
+    }
+    ```
+  - `400 Bad Request` — missing sender/receiver/account numbers, missing PIN, invalid PIN, or insufficient balance
+  - `404 Not Found` — accounts not found
+
+Example:
+```bash
+curl -X POST http://localhost:8000/dashboard/account/transfer \
+  -H "fingerprintId: fingerprint_pranali" \
+  -H "Content-Type: application/json" \
+  -d '{ "senderAccountNO": "1001234567", "receiverAccountNO": "1001234568", "amt": 5000, "pin": 1234 }'
+```
+
+### GET /dashboard/account/statement/:accountNumber
+- Returns transactions for the user owning `:accountNumber`.
+- Request headers:
+  - `fingerprintId: <string>`
+- Path params:
+  - `accountNumber: string`
+- Responses:
+  - `200 OK`
+    ```json
+    { "transactions": [ /* Transaction[] */ ] }
+    ```
+  - `400 Bad Request` — missing account number
+  - `404 Not Found` — account not found
+
+Example:
+```bash
+curl http://localhost:8000/dashboard/account/statement/1001234567 \
+  -H "fingerprintId: fingerprint_pranali"
+```
+
+## Data Models
+### User
+```json
+{
+  "id": number,
+  "name": string,
+  "fingerprintId": string,
+  "accounts": Account[],
+  "transactions": Transaction[],
+  "createdAt": string,
+  "updatedAt": string
+}
+```
+
+### Account
+```json
+{
+  "id": number,
+  "accountNumber": string,
+  "pin": number,
+  "balance": number,
+  "bankName": "SBI" | "HDFC" | "ICICI" | "AXIS",
+  "userId": number,
+  "createdAt": string,
+  "updatedAt": string
+}
+```
+
+### Transaction
+```json
+{
+  "id": number,
+  "toAccountNumber": string,
+  "fromAccountNumber": string,
+  "amount": number,
+  "createdAt": string,
+  "type": "transfer" | "withdraw" | "deposit",
+  "userId": number
+}
+```
+
+## CORS
+- Development origin allowed: `http://localhost:8080`
+- Methods: `GET, POST, PUT, DELETE, PATCH, OPTIONS`
+- Allowed headers include: `Content-Type, Authorization, x-account-number, fingerprintId`
