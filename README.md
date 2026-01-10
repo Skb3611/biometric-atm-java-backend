@@ -25,18 +25,30 @@ Base URL: `http://localhost:8000`
 ## User Credentials (For Testing)
 
 ### Users & Fingerprint IDs
-| User Name | Fingerprint ID | PIN(s) | Account Numbers | Banks |
-|-----------|----------------|--------|------------------|-------|
-| **Pranali bagul** | `fingerprint_pranali` | 1234 | 1001234567, 1001234570 | SBI, HDFC |
-| **Harshada Panchal** | `fingerprint_harshada` | 5678 | 1001234568, 1001234571 | ICICI, AXIS |
-| **Gayatri Waghmare** | `fingerprint_gayatri` | 9012 | 1001234572, 1001234574 | AXIS, HDFC |
-| **Shubhangi Waghchaure** | `fingerprint_shubhangi` | 3456 | 1001234573, 1001234575 | SBI, ICICI |
 
-### Account Details
-- **Pranali**: SBI (₹50,000), HDFC (₹30,000)
-- **Harshada**: ICICI (₹75,000), AXIS (₹45,000)
-- **Gayatri**: AXIS (₹60,000), HDFC (₹35,000)
-- **Shubhangi**: SBI (₹55,000), ICICI (₹40,000)
+| User Name | Fingerprint ID | PIN(s) | Account Numbers | Banks |
+|----------|----------------|--------|-----------------|-------|
+| Pranali bagul | fingerprint_pranali | 1234 | 1001234567, 1001234570 | SBI, HDFC |
+| Harshada Panchal | fingerprint_harshada | 5678 | 1001234568, 1001234571 | ICICI, AXIS |
+| Gayatri Waghmare | fingerprint_gayatri | 9012 | 1001234572, 1001234574 | AXIS, HDFC |
+| Shubhangi Waghchaure | fingerprint_shubhangi | 3456 | 1001234573, 1001234575 | SBI, ICICI |
+| Prof Pooja | fingerprint_prof_pooja | 1111 | 1001234576 | SBI |
+| Rohan | fingerprint_rohan | 2222 | 1001234577 | HDFC |
+| Shyam | fingerprint_shyam | 3333 | 1001234578 | ICICI |
+
+---
+
+## Account Details
+
+- Pranali: SBI ₹50,000, HDFC ₹30,000  
+- Harshada: ICICI ₹75,000, AXIS ₹45,000  
+- Gayatri: AXIS ₹60,000, HDFC ₹35,000  
+- Shubhangi: SBI ₹55,000, ICICI ₹40,000  
+- Prof Pooja: SBI ₹90,000  
+- Rohan: HDFC ₹42,000  
+- Shyam: ICICI ₹38,000  
+
+---
 
 ## Authentication
 - Protected endpoints under `/dashboard` require the `fingerprintId` header.
